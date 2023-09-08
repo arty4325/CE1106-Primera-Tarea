@@ -15,9 +15,30 @@
   (write-string contenido archivo);Escribe en el archivo 
   (close-output-port archivo));Cierra archivo
 
+(define (esperar-y-leer-archivo nombre-archivo intervalo);Funcion que espera la solicitud del cliente mediante un ciclo
+  (let loop ()
+    (define contenido (leer-archivo nombre-archivo))
+    (cond
+      [(eof-object? contenido); Caso posible de error, que un archivo vacio devuelva los caracteres eof
+       (displayln "Fin del archivo. Continuando...")
+       (sleep intervalo)
+       (loop)]
+      [(not (string=? contenido ""));Si es diferente a vacio entonces se actualiza con la respuesta probicional que siempre debe iniciar con una linea con R
+       (displayln contenido)
+       (borrar-contenido nombre-archivo)
+       (escribir-en-archivo "rutas.txt" "R\n")
+       (displayln "Contenido encontrado en el archivo.")
+       ; Dejar que el bucle termine de manera natural para salir
+      ]
+      [else
+       (sleep intervalo);Si esta vacio totalmente sigue
+       (displayln "No se encontró contenido en el archivo. Continuando...")
+       (loop)])))
+
+
 ; Ejemplo de uso:
 ;(escribir-en-archivo "rutas.txt" "Aqui voy a escribir el grafo\n")
-(displayln (leer-archivo "rutas.txt"))
+;(displayln (leer-archivo "rutas.txt"))
 ;(borrar-contenido "rutas.txt")
-
+(esperar-y-leer-archivo "rutas.txt" 5)
 ;Importante comentar la funcion de borrar para probarlo porque si no se va a leer un archivo vacio

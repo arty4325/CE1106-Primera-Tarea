@@ -1,0 +1,26 @@
+#lang racket
+
+(define (crear-archivo nombre-archivo)
+  (define archivo (open-output-file nombre-archivo))
+  (close-output-port archivo))
+
+(define (leer-archivo nombre-archivo)
+  (define archivo-lectura (open-input-file nombre-archivo))
+  (let ((contenido-leido (read-line archivo-lectura)))
+    (close-input-port archivo-lectura)
+    contenido-leido))
+
+(define (borrar-contenido nombre-archivo)
+  (define archivo (open-output-file nombre-archivo))
+  (close-output-port archivo))
+
+(define (escribir-en-archivo nombre-archivo contenido)
+  (define archivo (open-output-file nombre-archivo))
+  (write-string contenido archivo)
+  (close-output-port archivo))
+
+; Ejemplo de uso:
+(crear-archivo "rutas.txt")
+(escribir-en-archivo "rutas.txt" "Aqui voy a escribir el grafo\n")
+(displayln (leer-archivo "rutas.txt"))
+(borrar-contenido "rutas.txt")

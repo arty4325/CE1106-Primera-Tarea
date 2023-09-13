@@ -86,7 +86,7 @@
 
 
 ;Add Route between cities
-(define btn_joinNodes (new button%  [parent topRightContent] [label "Add Route"] [font (make-object font% 10 'default 'normal 'bold)]
+(define btn_joinNodes (new button%  [parent topRightContent] [label "Add Route (both ways)"] [font (make-object font% 10 'default 'normal 'bold)]
                                    [callback (lambda (button event)
                                                (joinNodes blackDrawingPen
                                                           (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
@@ -98,6 +98,26 @@
                                                           (car(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value))))
                                                           (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value)))))
                                                (add-route (send fromField get-value) (send  toField get-value) (string->number(send weightField get-value)))
+                                               (set! lineList (cons (list (hash-ref nameNumberHash (send fromField get-value))
+                                                                          (hash-ref nameNumberHash (send  toField get-value)))
+                                                                    lineList))
+                                               )]))
+
+;------------------------------------Draw in map Functions-----------------------------
+
+;Add Route between cities
+(define btn_joinNodes2 (new button%  [parent topRightContent] [label "Add Route (one way)"] [font (make-object font% 10 'default 'normal 'bold)]
+                                   [callback (lambda (button event)
+                                               (joinNodes blackDrawingPen
+                                                          (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
+                                                          (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
+                                                          (car(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value))))
+                                                          (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value)))))
+                                               (drawWeight (send weightField get-value) (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
+                                                          (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
+                                                          (car(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value))))
+                                                          (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value)))))
+                                               (add-route2 (send fromField get-value) (send  toField get-value) (string->number(send weightField get-value)))
                                                (set! lineList (cons (list (hash-ref nameNumberHash (send fromField get-value))
                                                                           (hash-ref nameNumberHash (send  toField get-value)))
                                                                     lineList))
@@ -162,6 +182,13 @@ Join nodes in Graph
   (hash-set! citiesGraph city1 routes-city1)
   (hash-set! citiesGraph city2 routes-city2)
   (showGraph))
+
+(define (add-route2 city1 city2 weight)
+  (define routes-city1 (hash-ref citiesGraph city1 '()))
+  (set! routes-city1 (cons (cons city2 weight) routes-city1))
+  (hash-set! citiesGraph city1 routes-city1)
+  (showGraph))
+
 
 
 #|
